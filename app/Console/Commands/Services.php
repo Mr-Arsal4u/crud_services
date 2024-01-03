@@ -36,25 +36,42 @@ class Services extends Command
     public function handle()
     {
         $name = $this->argument('serviceName');
-        $path = base_path("app/services/$name.php");
+        $path = base_path("App/Services/{$name}.php");
         if ($this->files->exists($path)) {
             $this->error("Service '{$name}' already exists!");
             return;
         }
-        $this->files->put($path, $this->buildClass($name));
+        $stub = app_path('/stub/service.stub');
+        $sketch = $this->files->get($stub);
+        $Content = str_replace('{{ClassName}}', $name, $sketch);
+        $this->files->put($path, $Content);
         $this->info("Service '{$name}' created successfully.");
     }
-    protected function buildClass($name)
-    {
-        return <<<CLASS
-<?php
+    
+// this commented code is to make file without stub
+//     public function handle()
+//     {
+//         $name = $this->argument('serviceName');
+//         $path = base_path("app/services/$name.php");
+//         if ($this->files->exists($path)) {
+//             $this->error("Service '{$name}' already exists!");
+//             return;
+//         }
+//         $this->files->put($path, $this->buildClass($name));
+//         $this->info("Service '{$name}' created successfully.");
+//     }
+//     protected function buildClass($name)
+//     {
+//         return <<<CLASS
+// <?php
 
-namespace App\Services;
+// namespace App\Services;
 
-class {$name}
-{
-    //
-}
-CLASS;
-    }
+// class {$name}
+// {
+//     //
+// }
+// CLASS;
+//     }
+
 }
